@@ -1,0 +1,22 @@
+{
+  "project": {
+    "name": "霸道总裁短剧项目",
+    "theme": "霸道总裁",
+    "audience": "女频",
+    "tone": "爽燃",
+    "ending": "HE",
+    "episodes": 60,
+    "language": "中文",
+    "overseas": false,
+    "created_at": "2026-03-03T17:30:16.358505"
+  },
+  "workflow": {
+    "step1_completed": true,
+    "step2_completed": true,
+    "step3_completed": false,
+    "step4_completed": false,
+    "step5_completed": false,
+    "step6_completed": false,
+    "step7_completed": false
+  }
+}

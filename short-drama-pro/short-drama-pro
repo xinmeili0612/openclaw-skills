@@ -1,0 +1,453 @@
+#!/usr/bin/env bash
+# 专业短剧剧本创作技能完整版
+# 7步工作流：/开始 → /创作方案 → /角色开发 → /目录 → /分集 → /自检 → /导出
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR=""
+VERSION="1.0.0"
+
+# 颜色定义
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# 打印带颜色的消息
+print_color() {
+    local color=$1
+    local message=$2
+    echo -e "${color}${message}${NC}"
+}
+
+print_header() {
+    echo "=================================================="
+    print_color $CYAN "$1"
+    echo "=================================================="
+}
+
+print_success() {
+    print_color $GREEN "✅ $1"
+}
+
+print_error() {
+    print_color $RED "❌ $1"
+}
+
+print_warning() {
+    print_color $YELLOW "⚠️  $1"
+}
+
+print_info() {
+    print_color $BLUE "💡 $1"
+}
+
+show_help() {
+    print_header "🎬 专业短剧剧本创作技能 v${VERSION}"
+    echo ""
+    echo "基于微信公众号文章《短剧剧本创作 Skill 正式发布！》开发"
+    echo "7步完整工作流：/开始 → /创作方案 → /角色开发 → /目录 → /分集 → /自检 → /导出"
+    echo ""
+    echo "📋 使用方法: short-drama-pro <命令> [参数]"
+    echo ""
+    echo "🎯 7步工作流命令:"
+    echo "  start       第1步：选题和定位（13种题材）"
+    echo "  plan        第2步：创作方案（故事骨架）"
+    echo "  characters  第3步：角色开发（人物设定）"
+    echo "  catalog     第4步：目录（50-100集规划）"
+    echo "  episode     第5步：分集（专业剧本产出）"
+    echo "  check       第6步：自检（质量把关）"
+    echo "  export      第7步：导出（直接交付）"
+    echo ""
+    echo "🛠️ 工具命令:"
+    echo "  analyze     商业分析（市场、收入、竞争）"
+    echo "  help        显示帮助信息"
+    echo "  version     显示版本信息"
+    echo ""
+    echo "📚 13种主流题材:"
+    echo "  1. 都市情感  2. 霸道总裁  3. 甜宠      4. 重生穿越"
+    echo "  5. 战神归来  6. 古装宫廷  7. 励志逆袭  8. 家庭伦理"
+    echo "  9. 萌宝     10. 悬疑探案 11. 软科幻   12. 末日重生"
+    echo "  13. 喜剧"
+    echo ""
+    echo "🌍 特色功能:"
+    echo "  • 出海模式（英文，好莱坞标准）"
+    echo "  • 合规审核（内置审核清单）"
+    echo "  • 专业剧本格式（非小说格式）"
+    echo "  • 爽剧方法论（内置专业参考）"
+    echo "  • 付费卡点策略（科学分布）"
+    echo ""
+    echo "📖 示例:"
+    echo "  # 开始创作霸道总裁题材"
+    echo "  short-drama-pro start --theme \"霸道总裁\" --episodes 60"
+    echo ""
+    echo "  # 生成第1集剧本"
+    echo "  short-drama-pro episode 1"
+    echo ""
+    echo "  # 出海模式"
+    echo "  short-drama-pro start --theme \"都市情感\" --overseas"
+    echo ""
+    echo "  # 商业分析"
+    echo "  short-drama-pro analyze --commercial"
+    echo ""
+    echo "💡 提示：建议在项目文件夹中运行，所有内容将保存在当前目录"
+    echo "=================================================="
+}
+
+show_version() {
+    print_header "🎬 专业短剧剧本创作技能 v${VERSION}"
+    echo "📅 发布日期：2026年3月3日"
+    echo "📝 基于：微信公众号文章《短剧剧本创作 Skill 正式发布！》"
+    echo "👨‍💻 作者：AI助手（基于原文开发）"
+    echo "🎯 功能：7步工作流专业短剧剧本创作"
+    echo "🌍 特色：出海模式、合规审核、专业格式、付费卡点"
+    echo ""
+    echo "📊 包含内容："
+    echo "  • 7步完整工作流"
+    echo "  • 13种主流题材"
+    echo "  • 1500+行专业参考文档"
+    echo "  • 出海模式（英文剧本）"
+    echo "  • 合规审核清单"
+    echo "  • 商业分析工具"
+    echo ""
+    echo "🚀 开始创作：short-drama-pro start"
+    echo "=================================================="
+}
+
+check_project_dir() {
+    if [ -z "$PROJECT_DIR" ]; then
+        PROJECT_DIR="$(pwd)/short-drama-project-$(date +%Y%m%d%H%M%S)"
+        mkdir -p "$PROJECT_DIR"
+        print_success "项目目录已创建：$PROJECT_DIR"
+        print_info "所有文件将保存到此目录"
+    fi
+}
+
+# 第1步：开始 - 选题和定位
+cmd_start() {
+    check_project_dir
+    
+    local theme=""
+    local audience="女频"
+    local tone="爽燃"
+    local ending="HE"
+    local episodes=60
+    local language="中文"
+    local overseas=false
+    
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --theme)
+                theme="$2"
+                shift 2
+                ;;
+            --audience)
+                audience="$2"
+                shift 2
+                ;;
+            --tone)
+                tone="$2"
+                shift 2
+                ;;
+            --ending)
+                ending="$2"
+                shift 2
+                ;;
+            --episodes)
+                episodes="$2"
+                shift 2
+                ;;
+            --language)
+                language="$2"
+                shift 2
+                ;;
+            --overseas)
+                overseas=true
+                language="英文"
+                shift
+                ;;
+            *)
+                print_error "未知参数：$1"
+                return 1
+                ;;
+        esac
+    done
+    
+    if [ -z "$theme" ]; then
+        print_header "🎯 请选择题材（输入编号或名称）"
+        echo "1. 都市情感  2. 霸道总裁  3. 甜宠      4. 重生穿越"
+        echo "5. 战神归来  6. 古装宫廷  7. 励志逆袭  8. 家庭伦理"
+        echo "9. 萌宝     10. 悬疑探案 11. 软科幻   12. 末日重生"
+        echo "13. 喜剧"
+        echo ""
+        read -p "请输入选择： " theme_input
+        
+        case $theme_input in
+            1|"都市情感") theme="都市情感" ;;
+            2|"霸道总裁") theme="霸道总裁" ;;
+            3|"甜宠") theme="甜宠" ;;
+            4|"重生穿越") theme="重生穿越" ;;
+            5|"战神归来") theme="战神归来" ;;
+            6|"古装宫廷") theme="古装宫廷" ;;
+            7|"励志逆袭") theme="励志逆袭" ;;
+            8|"家庭伦理") theme="家庭伦理" ;;
+            9|"萌宝") theme="萌宝" ;;
+            10|"悬疑探案") theme="悬疑探案" ;;
+            11|"软科幻") theme="软科幻" ;;
+            12|"末日重生") theme="末日重生" ;;
+            13|"喜剧") theme="喜剧" ;;
+            *) theme="霸道总裁" ;;
+        esac
+    fi
+    
+    print_header "🎬 第1步：选题和定位"
+    echo ""
+    echo "📝 创作配置："
+    echo "  • 题材：$theme"
+    echo "  • 受众：$audience"
+    echo "  • 基调：$tone"
+    echo "  • 结局：$ending"
+    echo "  • 集数：$episodes 集"
+    echo "  • 语言：$language"
+    echo "  • 出海模式：$([ "$overseas" = true ] && echo "是" || echo "否")"
+    echo ""
+    
+    # 保存配置
+    local config_file="$PROJECT_DIR/config.json"
+    cat > "$config_file" << EOF
+{
+  "project": {
+    "name": "${theme}短剧项目",
+    "theme": "$theme",
+    "audience": "$audience",
+    "tone": "$tone",
+    "ending": "$ending",
+    "episodes": $episodes,
+    "language": "$language",
+    "overseas": $overseas,
+    "created_at": "$(date -Iseconds)"
+  },
+  "workflow": {
+    "step1_completed": true,
+    "step2_completed": false,
+    "step3_completed": false,
+    "step4_completed": false,
+    "step5_completed": false,
+    "step6_completed": false,
+    "step7_completed": false
+  }
+}
+EOF
+    
+    print_success "配置已保存：$config_file"
+    echo ""
+    print_info "下一步建议："
+    echo "  short-drama-pro plan          # 第2步：生成创作方案"
+    echo "  short-drama-pro analyze       # 商业分析"
+    echo ""
+    print_info "提示：所有文件将保存到 $PROJECT_DIR"
+    echo "=================================================="
+}
+
+# 第2步：创作方案
+cmd_plan() {
+    check_project_dir
+    
+    local config_file="$PROJECT_DIR/config.json"
+    if [ ! -f "$config_file" ]; then
+        print_error "请先运行第1步：short-drama-pro start"
+        return 1
+    fi
+    
+    print_header "📝 第2步：创作方案生成中..."
+    
+    # 读取配置
+    local theme=$(grep -o '"theme": "[^"]*"' "$config_file" | cut -d'"' -f4)
+    local episodes=$(grep -o '"episodes": [0-9]*' "$config_file" | cut -d' ' -f2)
+    local overseas=$(grep -o '"overseas": [^,]*' "$config_file" | cut -d' ' -f2)
+    
+    # 生成创作方案
+    local plan_file="$PROJECT_DIR/创作方案.md"
+    
+    cat > "$plan_file" << EOF
+# 《${theme}》创作方案
+
+## 📋 项目信息
+- **题材类型**：${theme}
+- **集数规模**：${episodes}集
+- **创作模式**：$([ "$overseas" = "true" ] && echo "出海模式（英文）" || echo "国内模式（中文）")
+- **生成时间**：$(date '+%Y年%m月%d日 %H:%M')
+
+## 🎯 故事核心概念
+
+### 一句话梗概
+【根据题材自动生成的故事核心】
+
+### 核心冲突
+1. **主要冲突**：身份/阶级/情感的核心矛盾
+2. **次要冲突**：人际关系/事业发展的矛盾
+3. **内在冲突**：主角的内心挣扎和成长
+
+### 世界观设定
+- **时代背景**：现代/古代/未来/架空
+- **社会结构**：阶级分布、权力关系
+- **特殊设定**：根据题材的特殊元素
+
+## 📊 节奏设计
+
+### 整体节奏
+- **开端（1-15集）**：建立主角困境，引发观众共鸣
+- **发展（16-40集）**：冲突升级，情节发展，关系建立
+- **高潮（41-55集）**：最终冲突爆发，真相揭示
+- **结局（56-60集）**：冲突解决，情感升华，留续集悬念
+
+### 付费卡点策略
+- **第10集**：第一个付费卡点（小高潮）
+- **第25集**：第二个付费卡点（关系突破）
+- **第40集**：第三个付费卡点（重大转折）
+- **第55集**：最终付费卡点（大结局前）
+
+### 爽点分布
+- **每集至少1个核心爽点**
+- **每3集1个中等爽点**
+- **每10集1个大爽点**
+
+## 🎬 开篇黄金法则
+
+### 前5秒抓人
+1. **视觉冲击**：强烈对比或意外事件
+2. **情感共鸣**：立即建立主角困境
+3. **悬念设置**：留下"接下来会发生什么"的疑问
+
+### 第1集结构
+1. **开场（0-30秒）**：主角日常生活展示
+2. **转折（30-90秒）**：意外事件发生
+3. **冲突（90-150秒）**：主要矛盾建立
+4. **悬念（150-180秒）**：留下钩子，吸引继续观看
+
+## 💰 商业化分析
+
+### 市场定位
+- **目标受众**：$([ "$theme" = "霸道总裁" ] && echo "女性18-35岁" || echo "根据题材调整")
+- **平台偏好**：抖音、快手、B站等
+- **竞争分析**：同类题材市场饱和度和机会点
+
+### 变现潜力
+- **平台分成**：广告收入、付费观看
+- **IP开发**：角色IP、故事IP的衍生价值
+- **商业合作**：品牌植入、联名合作
+
+## 📝 创作要点
+
+### 内容要求
+1. **原创性**：避免抄袭，确保原创
+2. **专业性**：使用专业剧本格式
+3. **合规性**：符合平台审核要求
+4. **商业性**：考虑商业化变现可能
+
+### 技术要点
+1. **格式规范**：标准剧本格式
+2. **节奏控制**：爽点密集，节奏快速
+3. **情感共鸣**：引发观众情感共鸣
+4. **悬念设置**：每集结尾留钩子
+
+## 🔄 工作流程
+
+### 下一步：角色开发
+1. 主角设定（姓名、年龄、性格、背景）
+2. 配角设定（反派、朋友、家人等）
+3. 人物关系图（角色之间的关联）
+4. 成长弧线（角色的发展和变化）
+
+### 时间安排
+- **第1周**：完成1-15集剧本
+- **第2周**：完成16-30集剧本
+- **第3周**：完成31-45集剧本
+- **第4周**：完成46-60集剧本+修改
+
+## ⚠️ 注意事项
+
+### 合规要求
+1. 避免政治敏感内容
+2. 控制暴力血腥程度
+3. 避免色情低俗内容
+4. 符合社会主义核心价值观
+
+### 商业风险
+1. 市场变化风险
+2. 政策调整风险
+3. 竞争加剧风险
+4. 版权纠纷风险
+
+---
+*本方案基于专业短剧创作方法论生成，仅供参考和指导。实际创作中请根据具体情况进行调整。*
+EOF
+    
+    # 更新工作流状态
+    sed -i 's/"step2_completed": false/"step2_completed": true/' "$config_file"
+    
+    print_success "创作方案已生成：$plan_file"
+    echo ""
+    print_info "下一步建议："
+    echo "  short-drama-pro characters    # 第3步：角色开发"
+    echo "  short-drama-pro catalog       # 第4步：生成目录"
+    echo ""
+    print_info "提示：创作方案包含故事骨架、节奏设计、商业化分析等完整内容"
+    echo "=================================================="
+}
+
+# 第3步：角色开发
+cmd_characters() {
+    check_project_dir
+    
+    local config_file="$PROJECT_DIR/config.json"
+    if [ ! -f "$config_file" ]; then
+        print_error "请先运行第1步：short-drama-pro start"
+        return 1
+    fi
+    
+    print_header "👤 第3步：角色开发中..."
+    
+    local theme=$(grep -o '"theme": "[^"]*"' "$config_file" | cut -d'"' -f4)
+    local overseas=$(grep -o '"overseas": [^,]*' "$config_file" | cut -d' ' -f2)
+    
+    # 生成角色档案
+    local characters_file="$PROJECT_DIR/角色档案.md"
+    
+    cat > "$characters_file" << EOF
+# 《${theme}》角色档案
+
+## 🎭 主要角色
+
+### 主角：苏清月（女，18岁）
+**公开身份**：贫民窟学霸，普通高中生
+**真实身份**：苏氏集团真千金
+
+**外貌特征**：
+- 清秀但衣着朴素，常年穿洗得发白的校服
+- 眼神清澈坚定，有一种不服输的倔强
+- 手指有长期写字留下的茧子
+
+**性格特征**：
+- **表面**：冷静、内向、不善言辞
+- **内在**：聪明、坚韧、善良、有原则
+- **矛盾**：渴望亲情但又保持距离，相信知识改变命运
+
+**核心动机**：
+1. 治好养母的病
+2. 证明自己的价值
+3. 获得真正的亲情认可
+4. 用知识改变命运
+
+**爽点功能**：
+- 学霸实力打脸看不起她的人
+- 从底层逆袭的励志感
+- 亲情线的感动和共鸣
+- 爱情线的甜蜜和守护
+
+**成长弧线**：
+贫民窟自卑女孩 → 自信学霸 → 豪门千金 → 独立女性
+
+###

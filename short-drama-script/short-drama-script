@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# 短剧剧本生成技能命令行接口
+# 统一管理所有脚本功能
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+show_help() {
+    echo "📚 短剧剧本生成技能 v1.0.0"
+    echo "=" * 50
+    echo ""
+    echo "使用方法: short-drama-script <命令> [参数]"
+    echo ""
+    echo "可用命令:"
+    echo "  generate-outline   生成剧本大纲"
+    echo "  format-script      格式化剧本"
+    echo "  market-analysis    市场分析"
+    echo "  quick-generate     快速生成剧本（直接显示）"
+    echo "  help              显示帮助信息"
+    echo ""
+    echo "示例:"
+    echo "  short-drama-script quick-generate --theme '真千金是学霸' --episode 1"
+    echo "  short-drama-script generate-outline --genre '爱情' --episodes 60 --show"
+    echo "  short-drama-script format-script --input '大纲.json' --episode 1 --show"
+    echo ""
+}
+
+case "$1" in
+    "generate-outline"|"outline")
+        shift
+        python3 "$SCRIPT_DIR/scripts/generate_outline.py" "$@"
+        ;;
+    
+    "format-script"|"format")
+        shift
+        python3 "$SCRIPT_DIR/scripts/format_script.py" "$@"
+        ;;
+    
+    "market-analysis"|"market")
+        shift
+        python3 "$SCRIPT_DIR/scripts/market_analysis.py" "$@"
+        ;;
+    
+    "quick-generate"|"quick")
+        shift
+        python3 "$SCRIPT_DIR/scripts/generate_and_show.py" "$@"
+        ;;
+    
+    "help"|"--help"|"-h"|"")
+        show_help
+        ;;
+    
+    *)
+        echo "❌ 未知命令: $1"
+        echo "💡 使用 'short-drama-script help' 查看可用命令"
+        exit 1
+        ;;
+esac

@@ -1,0 +1,42 @@
+{
+  "ownerId": "user_ou_bce2d3a1b8c1f92af66b0e87ceffd82a",
+  "slug": "short-drama-script",
+  "version": "1.0.0",
+  "publishedAt": 20260303,
+  "tags": [
+    "script",
+    "drama",
+    "short-video",
+    "writing",
+    "chinese",
+    "animation",
+    "creative",
+    "commercial"
+  ],
+  "dependencies": [],
+  "compatibility": {
+    "openclaw": ">=2026.2.0",
+    "node": ">=18.0.0"
+  },
+  "author": {
+    "name": "冰河好帅",
+    "contact": "钱来有道公众号",
+    "original_article": "https://mp.weixin.qq.com/s/SN7LGIGAjcNcI9GfVGmZZA"
+  },
+  "config": {
+    "requires_api_key": false,
+    "recommended_models": ["deepseek-chat", "gpt-4", "claude-3"]
+  },
+  "features": [
+    "script-outline-generation",
+    "character-creation",
+    "format-standardization",
+    "market-analysis",
+    "commercial-guidance"
+  ],
+  "revenue_reference": {
+    "beginner": "20,000 RMB / 60 episodes, 15-20 days, monthly 20,000-60,000 RMB",
+    "experienced": "monthly 50,000-100,000 RMB, shares 100,000-300,000 RMB, annual up to 1,000,000 RMB",
+    "requirements": "original content, correct format, complete outline"
+  }
+}
